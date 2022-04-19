@@ -1,4 +1,4 @@
-#Game Idea: Monster Hunter(but not like that other one)
+#Game Idea: Monster Hunting dungeon crawler
 
 import random
 
