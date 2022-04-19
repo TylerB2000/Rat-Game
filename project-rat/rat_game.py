@@ -28,17 +28,16 @@ class Monster:
       player.exp += 100
     #Increased level progression for Skelly's so that first levels feel more rewarding  
     if self.name == 'Skelly':
-      exp = (self.level * 20)
-      player.exp += (self.level * 20)
+      exp = round(int(self.level * 20))
+      player.exp += round(int(self.level * 20))
     #Decreased level progression for Ogre's because they are a higher default level
     if self.clan == 'Ogre':
-      player.potions += 1
-      exp = (self.level * 2.5)
-      player.exp += (self.level * 2.5)
+      exp = round(int(self.level * 2.5))
+      player.exp += round(int(self.level * 2.5))
     #Default exp gain
     else:
-      exp = (self.level * 5)
-      player.exp += (self.level * 5)
+      exp = round(int(self.level * 5))
+      player.exp += round(int(self.level * 5))
     print('# {name} has been defeated! Your hero has gained {exp} XP! #'.format(name = self.name, exp = exp))
     player.lvl_up()
     
@@ -100,8 +99,8 @@ class Hero:
       #Makes sure hero doesn't gain more than max HP
       if self.health > self.max_health:
         self.health = self.max_health
-      self.potions += 2
-      print('*Congratulations, your hero is now level {level}!* \n{name}\'s damage and max health has been increased! {name} has also restored half of their health and gained 2 potions!'.format(level = self.level, name = self.name))
+      self.potions += 3
+      print('*Congratulations, your hero is now level {level}!* \n{name}\'s damage and max health has been increased! {name} has also restored half of their health and gained 3 potions!'.format(level = self.level, name = self.name))
     print('{name} now needs {exp} more XP to level up'.format(name = self.name, exp = int(100 - self.exp)))
 
   #What should happen when the hero takes damage
