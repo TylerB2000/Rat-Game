@@ -1,6 +1,8 @@
+#Game Idea: Monster Hunter(but not like that other one)
+
 import random
 
-#Game Idea: Monster Hunter(but not like that other one)
+#Set up Monster class
 class Monster:
   def __init__(self, name, clan, level):
     self.name = name
@@ -10,9 +12,11 @@ class Monster:
     self.attack = int(round(level * 1.25, 0))
     self.is_dead = False
   
+  #Monster representation line
   def __repr__(self):
     return 'You are facing a level {level} {name} from the {clan} clan. The {name} will deal {dmg} damage and has {health}HP left.'.format(level = self.level, clan = self.clan, name = self.name, dmg = self.attack, health = self.health)
 
+  #What should happen when a monster dies
   def dead(self, player):
     self.is_dead = True
     if self.health != 0:
@@ -29,6 +33,7 @@ class Monster:
     print('{name} has been defeated! You have gained a potion and some XP!'.format(name = self.name))
     player.lvl_up()
     
+  #What should happen when a monster takes damage
   def take_damage(self, amount, player):
     self.health -= amount
     if self.health <= 0:
@@ -37,11 +42,13 @@ class Monster:
     else:
       print('{name} is down to {health}HP.'.format(name = self.name, health = self.health))
 
+  #What should happen when a monster deals damage
   def deal_damage(self, player):
     dam = self.attack
     print('{name} attacked {player} for {damage} damage!'.format(name = self.name, player = player.name, damage = self.attack))
     player.take_damage(dam)
 
+#Set up hero class
 class Hero:
   def __init__(self, name, weapon, level, num_potions):
     self.name = name
@@ -54,15 +61,18 @@ class Hero:
     self.exp = 0
     self.is_dead = False
 
+  #Hero representation line
   def __repr__(self):
     return 'Your hero {name} is level {lvl}, currently wields a {weapon}, and has {health}HP.'.format(name = self.name, lvl = self.level, weapon = self.weapon[0], health = self.health)
   
+  #What should happen when the hero dies
   def dead(self):
     self.is_dead = True
     if self.health != 0:
       self.health = 0
     print('Oh no! Your hero {name} has been defeated! Better luck next time!'.format(name = self.name))
 
+  #What should happen when the hero levels up
   def lvl_up(self):
     if self.exp >= 100:
       self.level += 1
@@ -72,7 +82,7 @@ class Hero:
       print('Congratulations, your hero is now level {level}! {name}\'s stats have increased and their health has been returned to full!'.format(level = self.level, name = self.name))
     print('Your hero now needs {exp} more XP to level up'.format(exp = 100 - self.exp))
 
-
+  #What should happen when the hero takes damage
   def take_damage(self, amount):
     self.health -= amount
     if self.health <= 0:
@@ -81,6 +91,7 @@ class Hero:
     else:
       print('{name} is now down to {health}HP.'.format(name = self.name, health = self.health))
 
+  #What should happen when the hero uses the block action
   def block(self, mon):
     amount = int(round(mon.attack / 2))
     roll = random.randint(1, 4)
@@ -92,6 +103,7 @@ class Hero:
       print('You have failed to block the attack.')
       self.take_damage(amount)
   
+  #What should happen when the hero deals damage
   def deal_damage(self, mon):
     dam = 0
     if self.weapon == wep1:
@@ -111,6 +123,7 @@ class Hero:
     print('{name} attacked {mon} for {damage} damage!'.format(name = self.name, mon = mon.name, damage = dam))
     mon.take_damage(dam, self)
 
+  #What should happen when the hero uses a potion
   def use_potion(self):
     if self.potions > 0:
       self.health += 10
@@ -120,13 +133,14 @@ class Hero:
     else:
       print('You are out of potions :(')
 
+#Weapon descriptions
 wep1 = ['Dagger', 1]
 wep2 = ['Sword', 2]
 wep3 = ['Axe', 3]
 
+#Get user inputs for the hero's name and what weapon to start with
 name_input = input('Hello, and welcome to Monster Hunter(not that one)! What name would you like to give your hero? ')
 choice = input('Which weapon would you like your hero to take on their journey? Type \'Dagger\'(1 damage, 30% crit chance), \'Sword\'(2 damage, 20% crit chance), or \'Axe\'(3 damage, 10% crit chance). ').title()
-
 while choice != 'Dagger' and choice != 'Sword' and choice != 'Axe':
   choice = input('Whoops! Looks like that wasn\'t one of the choices! Please type \'Dagger\'(1 damage, 30% crit chance), \'Sword\'(2 damage, 20% crit chance), or \'Axe\'(3 damage, 10% crit chance). ').title()
 if choice == 'Dagger':
@@ -136,27 +150,34 @@ if choice == 'Sword':
 if choice == 'Axe':
   wep_choice = wep3
 
+#Define the hero
 hero = Hero(name_input, wep_choice, 1, 5)  
 
+#Make sure first enemy is "Remy"
 if hero.level == 1:
   mon = Monster('Remy', 'Rat', 1)
 
-fight = 'reset'
+#Encounter reset default value
+reset = True
 
-while fight == 'reset':
+while reset == True:
   if wep_choice == wep1:
-    fight = input('{mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level)))).title()
-    while fight != 'Attack' and fight != 'Block' and fight != 'Potion' and fight != 'reset':
+    fight = input('{mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level)))).title()    
+    while fight != 'Attack' and fight != 'Block' and fight != 'Potion':
       fight  = input('Invalid command, please try again. {mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level)))).title()
+
   if wep_choice == wep2:
     fight = input('{mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level * .75)))).title()
-    while fight != 'Attack' and fight != 'Block' and fight != 'Potion' and fight != 'reset':
+    while fight != 'Attack' and fight != 'Block' and fight != 'Potion':
       fight  = input('Invalid command, please try again. {mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level * .75)))).title()
+
   if wep_choice == wep3:
     fight = input('{mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level * .6)))).title()
-    while fight != 'Attack' and fight != 'Block' and fight != 'Potion' and fight != 'reset':
+    while fight != 'Attack' and fight != 'Block' and fight != 'Potion':
       fight  = input('Invalid command, please try again. {mon} {hero} What will you do? Type \'Attack\'(deal {dmg} damage), \'Block\'(75% chance to reflect half damage), or \'Potion\'(Heals 10HP: You have {pot} potions). '.format(mon = mon, hero = hero, pot = hero.potions, dmg = hero.attack * int(round(hero.level * .6)))).title()
+
   if fight == 'Attack':
+    reset = False
     mon_attack = False
     hero.deal_damage(mon)
     if mon.is_dead == False and mon_attack == False:
@@ -181,19 +202,23 @@ while fight == 'reset':
       if hero.level > 16:
         mon = Monster('Big Cheese', 'Rat Mob', 35)
       mon.is_dead == False
+
     if hero.is_dead == True:
       break
     else:
-      fight = 'reset'
+      reset = True
+
   if fight == 'Block':
+    reset = False
     hero.block(mon)
     if hero.is_dead == True:
-      break
+      break  
     else:
-      fight = 'reset'
+      reset = True  
   if fight == 'Potion':
+    reset = False
     hero.use_potion()
-    fight = 'reset'
+    reset = True
 
 
 
