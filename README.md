@@ -1,6 +1,6 @@
 # Rat-Game
 
-Rat Game is a text based, dungeon crawler terminal game. Rat Game was completely coded in Python3
+Rat Game is a text-based, terminal-based, RPG. Rat Game was completely coded in Python3
 
 In Rat Game you play as a hero tasked with making their way through a dungeon full of various creatures. 
 Once you start the game you will be asked for a name for your hero and what weapon to equip them with. 
