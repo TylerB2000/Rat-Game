@@ -23,16 +23,34 @@ class Monster:
     if self.health != 0:
       self.health = 0
     #Give player a level for defeating Remy so they only will face one
-    if self.name == 'Remy':
+    if self.clan == 'Rat':
       player.exp += 200
     #Increased level progression for Skelly's so that first levels feel more rewarding  
-    if self.name == 'Skelly':
+    if self.clan == 'Skeleton':
+      skelly = random.randint(1, 2)
+      if skelly == 1:
+        print('*The enemy dropped a potion!*')
+        player.potions += 1
+        if player.potions > 15:
+          player.potions = 15
       player.exp += int(self.level * 20)
     #Decreased level progression for Ogre's because they are a higher default level
     if self.clan == 'Ogre':
+      ogre = random.randint(1, 3)
+      if ogre == 1:
+        print('*The Ogre dropped 3 potions!!!*')
+        player.potions += 3
+        if player.potions > 15:
+          player.potions = 15
       player.exp += int(self.level * 5)
     #Default exp gain
     else:
+      potty = random.randint(1, 2)
+      if potty == 1:
+        print('*The enemy dropped a potion!*')
+        player.potions += 1
+        if player.potions > 15:
+          player.potions = 15
       player.exp += int(self.level * 10)
     print('# {name} has been defeated! Your hero has gained some XP! #'.format(name = self.name))
     player.lvl_up()
@@ -187,7 +205,7 @@ if choice == 'Axe':
   wep_choice = wep3
 
 #Define the hero
-hero = Hero(name_input, wep_choice, 1, 5)  
+hero = Hero(name_input, wep_choice, 1, 2)  
 
 #Make sure first enemy is "Remy"
 if hero.level == 1:
@@ -199,9 +217,9 @@ reset = True
 #Encounter commands
 while reset == True:
   #Get user input for encounter action
-  fight = input('\n{mon} \n{hero} \nWhat will you do? Type \'Attack\', \'Block\'(75% chance to reflect half damage), or \'Heal\'(Heals |{hp}HP|: You have {pot} potions). \n> '.format(mon = mon, hero = hero, hp = int(round(hero.max_health * .3, 0)), pot = hero.potions)).title()    
+  fight = input('\n{mon} \n{hero} \nWhat will you do? Type \'Attack\', \'Block\'(75% chance to reflect half damage), or \'Heal\'(Heals |{hp}HP|: You have {pot} potions). \n> '.format(mon = mon, hero = hero, hp = int(round(hero.max_health * .35, 0)), pot = hero.potions)).title()    
   while fight != 'Attack' and fight != 'Block' and fight != 'Heal':
-    fight  = input('Invalid command, please try again. \n{mon} \n{hero} \nWhat will you do? Type \'Attack\'(deal [{dmg} damage]), \'Block\'(75% chance to reflect half damage), or \'Heal\'(Heals |{hp}HP|: You have {pot} potions). \n> '.format(mon = mon, hero = hero, hp = int(round(hero.max_health * .3, 0)), pot = hero.potions, dmg = hero.attack * int(hero.level))).title()
+    fight  = input('Invalid command, please try again. \n{mon} \n{hero} \nWhat will you do? Type \'Attack\'(deal [{dmg} damage]), \'Block\'(75% chance to reflect half damage), or \'Heal\'(Heals |{hp}HP|: You have {pot} potions). \n> '.format(mon = mon, hero = hero, hp = int(round(hero.max_health * .35, 0)), pot = hero.potions, dmg = hero.attack * int(hero.level))).title()
   #Determine what should happen if the attack command is chosen
   if fight == 'Attack':
     reset = False
@@ -223,14 +241,14 @@ while reset == True:
       if 1 < hero.level <= 3:
         m1Lvl = random.randint(2, 5)
         mon = Monster('Skelly', 'Skeleton', m1Lvl)
-      if 3 < hero.level <= 10:
+      if 3 < hero.level <= 5:
         m2Lvl = random.randint(6, 10)
         mon = Monster('Skully', 'Skeleton', m2Lvl)
-      if 10 < hero.level <= 15:
+      if 5 < hero.level <= 10:
         m3Lvl = random.randint(15, 20)
         mon = Monster('Grog', 'Ogre', m3Lvl)
-      if 15 < hero.level <= 20:
-        m4Lvl = random.randint(20, 30)
+      if 10 < hero.level <= 20:
+        m4Lvl = random.randint(20, 40)
         mon = Monster('Greg', 'Ogre', m4Lvl)
       if hero.level > 20:
         mon = Monster('Big Cheese', 'Rat Mob', 50)
