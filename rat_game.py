@@ -24,20 +24,20 @@ class Monster:
       self.health = 0
     #Give player a level for defeating Remy so they only will face one
     if self.name == 'Remy':
-      exp = 100
-      player.exp += 100
+      exp = 200
+      player.exp += 200
     #Increased level progression for Skelly's so that first levels feel more rewarding  
     if self.name == 'Skelly':
       exp = round(int(self.level * 20))
       player.exp += round(int(self.level * 20))
     #Decreased level progression for Ogre's because they are a higher default level
     if self.clan == 'Ogre':
-      exp = round(int(self.level * 2.5))
-      player.exp += round(int(self.level * 2.5))
-    #Default exp gain
-    else:
       exp = round(int(self.level * 5))
       player.exp += round(int(self.level * 5))
+    #Default exp gain
+    else:
+      exp = round(int(self.level * 10))
+      player.exp += round(int(self.level * 10))
     print('# {name} has been defeated! Your hero has gained {exp} XP! #'.format(name = self.name, exp = exp))
     player.lvl_up()
     
@@ -73,11 +73,11 @@ class Hero:
   #Hero representation line
   def __repr__(self):
     if wep_choice == wep1:
-      return 'Your hero {name} is level {lvl}, currently does [{dmg} damage], and has |{health}/{maxhp}HP|.'.format(name = self.name, lvl = self.level, dmg = self.attack * int(round(self.level)), health = self.health, maxhp = self.max_health)
+      return 'Your hero {name} is level {lvl}, currently does [{dmg} damage], and has |{health}/{maxhp}HP|.'.format(name = self.name, lvl = self.level, dmg = self.attack * int(round(self.level * .9)), health = self.health, maxhp = self.max_health)
     if wep_choice == wep2:
       return 'Your hero {name} is level {lvl}, currently does [{dmg} damage], and has |{health}/{maxhp}HP|.'.format(name = self.name, lvl = self.level, dmg = self.attack * int(round(self.level * .8)), health = self.health, maxhp = self.max_health)
     if wep_choice == wep3:
-      return 'Your hero {name} is level {lvl}, currently does [{dmg} damage], and has |{health}/{maxhp}HP|.'.format(name = self.name, lvl = self.level, dmg = self.attack* int(round(self.level * .6)), health = self.health, maxhp = self.max_health)
+      return 'Your hero {name} is level {lvl}, currently does [{dmg} damage], and has |{health}/{maxhp}HP|.'.format(name = self.name, lvl = self.level, dmg = self.attack* int(round(self.level * .7)), health = self.health, maxhp = self.max_health)
 
   #What should happen when the hero dies
   def dead(self):
@@ -89,19 +89,26 @@ class Hero:
 
   #What should happen when the hero levels up
   def lvl_up(self):
-    if self.exp >= 100:
+    if self.exp >= 200:
       self.level += 1
       #Carry over exp incase hero has more that 100 exp
-      self.exp = self.exp - 100
+      self.exp = self.exp - 200
       #Increase the hero's max health and restore their HP
-      self.max_health = int(round(self.level * 5))
+      self.max_health = int(round(self.level * 4))
+      #Set limit on max HP
+      if self.max_health > 100:
+        self.max_health = 100
       self.health += int(round(self.max_health / 2))
       #Makes sure hero doesn't gain more than max HP
       if self.health > self.max_health:
         self.health = self.max_health
-      self.potions += 3
-      print('*Congratulations, your hero is now level {level}!* \n{name}\'s damage and max health has been increased! {name} has also restored half of their health and gained 3 potions!'.format(level = self.level, name = self.name))
-    print('{name} now needs {exp} more XP to level up'.format(name = self.name, exp = int(100 - self.exp)))
+      self.potions += 2
+      #Set limit on max potions
+      if self.potions > 15:
+        self.potions = 15
+      print('*Congratulations, your hero is now level {level}!* \n{name}\'s damage and max health has been increased! {name} has also restored half of their health and gained 2 potions!'.format(level = self.level, name = self.name))
+    else:
+      print('{name} now needs {exp} more XP to level up'.format(name = self.name, exp = int(200 - self.exp)))
 
   #What should happen when the hero takes damage
   def take_damage(self, amount):
@@ -118,7 +125,10 @@ class Hero:
     amount = int(round(mon.attack / 2))
     #Random number decides if player blocks attack
     roll = random.randint(1, 4)
-    if roll == 1 or 2 or 3:
+    if roll == 1:
+      print('You have failed to block the attack.')
+      mon.deal_damage(self)
+    else:
       self.health -= amount
       #Check for hero death
       if self.health <= 0:
@@ -128,22 +138,19 @@ class Hero:
         print('You have succesfully blocked the attack for [{amount} damage]. \n|{name} is now down to {health}HP.|'.format(amount = amount, name = self.name, health = self.health))
         #Monster rebound damage for succesfull block
         mon.take_damage(amount, self)
-    else:
-      print('You have failed to block the attack.')
-      mon.deal_damage(self)
-  
+
   #What should happen when the hero deals damage
   def deal_damage(self, mon):
     dam = 0
     #Determines crit chance based on weapon
     if self.weapon == wep1:
-      dam = self.attack * int(round(self.level))
-      crit = random.randint(1, 3)
+      dam = self.attack * int(round(self.level * .9))
+      crit = random.randint(1, 2)
     elif self.weapon == wep2:
       dam = self.attack * int(round(self.level * .8))
-      crit = random.randint(1, 5)
+      crit = random.randint(1, 3)
     elif self.weapon == wep3:
-      dam = self.attack * int(round(self.level * .6))
+      dam = self.attack * int(round(self.level * .7))
       crit =  random.randint(1, 10)
     if crit == 1:
       print('{Critical hit!}')
@@ -172,10 +179,10 @@ wep2 = ['Sword', 2]
 wep3 = ['Axe', 3]
 
 #Get user inputs for the hero's name and what weapon to start with
-name_input = input('Hello, and welcome to The Rat Game! \nWhat name would you like to give your hero? \n> ')
-choice = input('Which weapon would you like your hero to take on their journey? \nType \'Dagger\'(1 damage, 30% crit chance), \'Sword\'(2 damage, 20% crit chance), or \'Axe\'(3 damage, 10% crit chance). \n> ').title()
+name_input = input('\nHello, and welcome to The Rat Game! \nWhat name would you like to give your hero? \n> ')
+choice = input('Which weapon would you like your hero to take on their journey? \nType \'Dagger\'(1 damage, 50% crit chance), \'Sword\'(2 damage, 30% crit chance), or \'Axe\'(3 damage, 10% crit chance). \n> ').title()
 while choice != 'Dagger' and choice != 'Sword' and choice != 'Axe':
-  choice = input('Whoops! Looks like that wasn\'t one of the choices! \nPlease type \'Dagger\'(1 damage, 30% crit chance), \'Sword\'(2 damage, 20% crit chance), or \'Axe\'(3 damage, 10% crit chance). \n> ').title()
+  choice = input('Whoops! Looks like that wasn\'t one of the choices! \nPlease type \'Dagger\'(1 damage, 50% crit chance), \'Sword\'(2 damage, 30% crit chance), or \'Axe\'(3 damage, 10% crit chance). \n> ').title()
 if choice == 'Dagger':
   wep_choice = wep1
 if choice == 'Sword':
@@ -217,20 +224,20 @@ while reset == True:
     #Spawns a new enemy if the current one is dead
     while mon.is_dead == True:
       #Determines what enemy to spawn based on hero level
-      if 1 < hero.level <= 3:
+      if 1 < hero.level <= 5:
         m1Lvl = random.randint(2, 5)
         mon = Monster('Skelly', 'Skeleton', m1Lvl)
-      if 3 < hero.level <= 5:
+      if 5 < hero.level <= 10:
         m2Lvl = random.randint(6, 10)
         mon = Monster('Skully', 'Skeleton', m2Lvl)
-      if 5 < hero.level <= 10:
+      if 10 < hero.level <= 15:
         m3Lvl = random.randint(11, 20)
         mon = Monster('Grog', 'Ogre', m3Lvl)
-      if 10 < hero.level <= 16:
+      if 15 < hero.level <= 20:
         m4Lvl = random.randint(20, 30)
         mon = Monster('Greg', 'Ogre', m4Lvl)
-      if hero.level > 16:
-        mon = Monster('Big Cheese', 'Rat Mob', 35)
+      if hero.level > 20:
+        mon = Monster('Big Cheese', 'Rat Mob', 40)
       #Resets monster death buffer so a new one can spawn  
       mon.is_dead == False
     #Lose condition sequence break
@@ -251,20 +258,20 @@ while reset == True:
     #Spawns a new enemy if the current one is dead
     while mon.is_dead == True:
       #Determines what enemy to spawn based on hero level
-      if 1 < hero.level <= 3:
+      if 1 < hero.level <= 5:
         m1Lvl = random.randint(2, 5)
         mon = Monster('Skelly', 'Skeleton', m1Lvl)
-      if 3 < hero.level <= 5:
+      if 5 < hero.level <= 10:
         m2Lvl = random.randint(6, 10)
         mon = Monster('Skully', 'Skeleton', m2Lvl)
-      if 5 < hero.level <= 10:
+      if 10 < hero.level <= 15:
         m3Lvl = random.randint(11, 20)
         mon = Monster('Grog', 'Ogre', m3Lvl)
-      if 10 < hero.level <= 16:
+      if 15 < hero.level <= 20:
         m4Lvl = random.randint(20, 30)
         mon = Monster('Greg', 'Ogre', m4Lvl)
-      if hero.level > 16:
-        mon = Monster('Big Cheese', 'Rat Mob', 35)
+      if hero.level > 20:
+        mon = Monster('Big Cheese', 'Rat Mob', 40)
       #Resets monster death buffer so a new one can spawn  
       mon.is_dead == False
     #Lose condition sequence break
